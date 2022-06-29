@@ -1,16 +1,32 @@
-﻿using System.IO.Compression;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Pixiv.Core
 {
+    public enum SMode
+    {
+        [Description("s_tag_full")]
+        TagFull,
+        [Description("s_tag")]
+        Tag
+    }
+    public class SearchResult
+    {
+        public List<string> Ids = new List<string>();
+        public int Total;
+    }
+
     public class PixivClawer
     {
         /// <summary>
         /// 搜索url
         /// </summary>
-        private string _searchUrl = "https://www.pixiv.net/ajax/search/illustrations/primarina?word={0}&order=date_d&mode=all&p={1}&s_mode=s_tag_full&type=illust_and_ugoira&lang=zh";
+        //private string _searchUrl = "https://www.pixiv.net/ajax/search/illustrations/{0}?word={0}&order=date_d&mode=all&p={1}&s_mode=s_tag_full&type=illust_and_ugoira&lang=zh";
+        private string _searchUrl = "https://www.pixiv.net/ajax/search/illustrations/{0}?word={0}&order=date_d&mode=all&p={1}&s_mode={2}&type=illust_and_ugoira&lang=zh";
         private string _artworksUrl = "https://www.pixiv.net/artworks/{0}";
 
         private HttpClient _httpClient;
@@ -42,10 +58,11 @@ user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
             }
         }
 
-        public async Task<List<string>> SearchTagAsync(string tag, int page = 1)
+        public async Task<SearchResult> SearchTagAsync(string tag, int page = 1, SMode sMode = SMode.TagFull)
         {
             List<string> ids = new();
-            var res = await _httpClient.GetAsync(string.Format(_searchUrl, tag, page));
+            Console.WriteLine(string.Format(_searchUrl, tag, page, sMode.ToString()));
+            var res = await _httpClient.GetAsync(string.Format(_searchUrl, tag, page, sMode == SMode.TagFull ? "s_tag_full" : "s_tag"));
             //Console.WriteLine(await res.Content.ReadAsStringAsync());
             GZipStream gZipStream = new GZipStream(await res.Content.ReadAsStreamAsync(), CompressionMode.Decompress);
             using var resultStream = new MemoryStream();
@@ -54,13 +71,18 @@ user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
             //Console.WriteLine(html);
             var jsonData = JsonDocument.Parse(html).RootElement;
             var imgList = jsonData.GetProperty("body").GetProperty("illust").GetProperty("data");
+            var total = jsonData.GetProperty("body").GetProperty("illust").GetProperty("total").GetInt32();
             for (int i = 0; i < imgList.GetArrayLength(); ++i)
             {
                 // Console.WriteLine(imgList[i]);
                 ids.Add(imgList[i].GetProperty("id").GetString());
             }
 
-            return ids;
+            return new SearchResult
+            {
+                 Ids = ids,
+                 Total = total,
+            };
         }
 
 

@@ -3,8 +3,9 @@ using Pixiv.Core;
 
 PixivClawer PixivClawer = new PixivClawer();
 
-var ids = await PixivClawer.SearchTagAsync("primarina");
+var ids = await PixivClawer.SearchTagAsync("anya", sMode: SMode.Tag);
 
-var img = await PixivClawer.GetImageByteArray(ids[0]);
+//var img = await PixivClawer.GetImageByteArray(ids[0]);
+Console.WriteLine(ids.Total);
 
-File.WriteAllBytes("test.png", img);
+//File.WriteAllBytes("test1.png", img);

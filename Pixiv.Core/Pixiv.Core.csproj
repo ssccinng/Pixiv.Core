@@ -1,10 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Authors>scixing</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ssccinng/Pixiv.Core</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/ssccinng/Pixiv.Core</PackageProjectUrl>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
 </Project>
