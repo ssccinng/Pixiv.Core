@@ -9,7 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/ssccinng/Pixiv.Core</RepositoryUrl>
     <PackageProjectUrl>https://github.com/ssccinng/Pixiv.Core</PackageProjectUrl>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
 </Project>

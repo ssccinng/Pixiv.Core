@@ -187,10 +187,19 @@ user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
             var html = Encoding.UTF8.GetString(resultStream.ToArray());
             var data = JsonDocument.Parse(html).RootElement;
             var illusts = data.GetProperty("body").GetProperty("illusts");
-            foreach (var id in illusts.EnumerateObject())
+            try
             {
-                ids.Add(id.Name);
+                foreach (var id in illusts.EnumerateObject())
+                {
+                    ids.Add(id.Name);
+                }
             }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
+            
             return ids.ToArray();
         }
     }
